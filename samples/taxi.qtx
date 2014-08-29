@@ -1,22 +1,30 @@
 
-param DATE_FROM datetime default '1900-01-01'
-param DATE_TO datetime default '9999-12-31'
+# Konwersja danych TW do systemu Taxi+
 
-opt charset Windows-1250
-opt xml_version 1.0
-opt xml_standalone no
+parameters
+    DATE_FROM   datetime default '1900-01-01'
+    DATE_TO     datetime default '9999-12-31'
 
-root "PLIK_IMPORTU_TAXI"
-  
-    node "EWIDENCJA" is (select * from Taxi_Ewidencja)
-        attr_from_query
-    end
+options
+    charset         Windows-1250
+    date_format     yyyy-MM-dd
 
-    node "TYTULY" is (select * from Taxi_Tytuly where DateFrom >= {DATE_FROM} and DateTo <= {DATE_TO})
+structure
+    root "PLIK_IMPORTU_TAXI"
+      
+        node "EWIDENCJA" is (select * from Taxi_Ewidencja)
+            attr from query
+        end
         
+        # lista tytulow
+        node "TYTULY" is (select * from Taxi_Tytuly where DateFrom >= {DATE_FROM} and DateTo <= {DATE_TO})
+            attr "NUMER" is $WritingNumber
+            node "POZYCJE" is (select * from TaxiPozycje where WritingHeaderId = $parent.WritingHeaderId)
+                
+            end
+        end
+
+
     end
-
-
-end
 
 
