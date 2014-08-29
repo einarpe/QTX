@@ -1,0 +1,22 @@
+
+param DATE_FROM datetime default '1900-01-01'
+param DATE_TO datetime default '9999-12-31'
+
+opt charset Windows-1250
+opt xml_version 1.0
+opt xml_standalone no
+
+root "PLIK_IMPORTU_TAXI"
+  
+    node "EWIDENCJA" is (select * from Taxi_Ewidencja)
+        attr_from_query
+    end
+
+    node "TYTULY" is (select * from Taxi_Tytuly where DateFrom >= {DATE_FROM} and DateTo <= {DATE_TO})
+        
+    end
+
+
+end
+
+

@@ -1,0 +1,23 @@
+
+# komć
+# wynik:
+# <database> <table name="common_customer"> <column name="Id" /> <column name="Name" /> </table> </database>
+
+param NAME string default ''
+param VAL int 
+
+opt charset Windows-1250
+
+root "database" 
+  attr "generated" is (select 'true')
+  attr "version" is 1.0
+  attr "attrx" is 'attrx value is "attrx"'
+
+  node "table" is (select object_id, name from sys.tables where name > {NAME}) 
+    attr "name" is $name
+    node "column" is (select name from sys.columns where object_id = $parent.object_id)
+      attr "name" is $name 
+      attr "table_name" is $parent.name
+    end
+  end
+end
