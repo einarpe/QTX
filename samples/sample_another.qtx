@@ -1,0 +1,42 @@
+{
+  options: 
+  {
+    encoding: windows-1250,
+    format_date: dd-MM-yyyy,
+    format_child_inner_xml: "%s"
+  },
+  params:  
+  {
+    DATE_FROM: datetime default '1900-01-01', 
+    DATE_TO: datetime default '2100-01-01'
+  },
+  struct: 
+    {
+      plik_importu_taxi:
+      {
+        naglowek:
+        {
+          wersja: 1.0,
+          program: ecoSanit sdds
+        },
+        ewidencja: 
+        { 
+          ?: (Select * from TaxiEwidencja) !auto
+        },
+        tytuly:
+        {
+          ?: (Select * From TaxiTytuly where DateFrom >= $DATE_FROM and DateTo <= $DATE_TO),
+          @id: $id,
+          numer: $number, 
+          pozycje:
+          {
+            ?: (Select * From TaxiPozycje where WritingHeaderId = $^.WritingHeaderId),
+            osoby:
+            {
+              ?: (Select * From TaxiOsoby where WritingPositionId = $^.WritingPositionId) !auto
+            },
+          }
+        }
+      }
+    }
+}
